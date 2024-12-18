@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Lexend Deca';
+  src: url("./assets/Fonts/LexendDecaRegular.ttf");
+}
+
+
+:root {
+  font-family: 'Lexend Deca', 'sans-serif';
+  -webkit-font-smoothing: antialiased;
+}
