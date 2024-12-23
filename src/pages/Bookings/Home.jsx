@@ -122,6 +122,7 @@ const Home = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         data={selectBooking}
+        setData = {setData}
       />
     </div>
   );

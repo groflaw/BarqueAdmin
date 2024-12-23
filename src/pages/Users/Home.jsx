@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 import DatePicker from "../../components/Boats/DatePicker";
 
+import { setBookStatus } from "../../features/bookings/bookingAction";
 import { updateUserInfo, blockUser } from "../../features/user/userAction";
 import { setLoading } from "../../features/global/globalSlice";
 import { getAllUsers } from "../../features/user/userAction";
