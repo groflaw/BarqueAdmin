@@ -6,10 +6,22 @@ export const BookingStatus = [
   { title: "Due", color: "#f4bf64" },
   { title: "Confirmed", color: "#2a8500" },
 ];
-export const apiKey = "AIzaSyBUHaXnKMYi8ipKF-UgCHWH1TSdVCse8p0"; 
+export const apiKey = "AIzaSyBUHaXnKMYi8ipKF-UgCHWH1TSdVCse8p0";
 
 export const cancelback = [
   { color: "#2a8500", text: "FLEXIBLE" },
   { color: "#f4bf64", text: "MODERATE" },
   { color: "#ff3b30", text: "STRICT" },
 ];
+
+export const BoatStatus = ["Pending Approval", "Approve", "Peding"];
+export const TimeOptions = {
+  timeZone: "America/Los_Angeles",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true,
+};

@@ -1,13 +1,28 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import FirstDoc from "../../assets/Background/doc1.png";
 import SecondDoc from "../../assets/Background/doc2.png";
 
-const DocModal = ({ isOpen, onClose }) => {
+import { setBoatStatus } from "../../features/boats/boatsAction";
+
+const DocModal = ({ isOpen, onClose, status, boatId }) => {
+  const dispatch = useDispatch();
   if (!isOpen) return null;
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+
+  const submitStatus = (id, sort, value) => {
+    let result = dispatch(setBoatStatus(id, sort, value));
+    if (result?.errors) {
+      for (let key in result.errors) {
+        if (result.errors.hasOwnProperty(key)) {
+          toast.error(`${result.errors[key]}`);
+        }
+      }
     }
   };
   return (
@@ -25,7 +40,7 @@ const DocModal = ({ isOpen, onClose }) => {
             style={{ ...styles.Icon, fill: "#17233c" }}
             viewBox="0 0 24 24"
             className="cursor-pointer"
-            onClick={()=>{
+            onClick={() => {
               onClose();
             }}
           >
@@ -36,35 +51,66 @@ const DocModal = ({ isOpen, onClose }) => {
         <div className="flex flex-row mt-3 gap-4">
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
             <img src={FirstDoc} alt="" style={{ width: "100%", height: 150 }} />
-            <div className="flex flex-row justify-between mt-3 items-center">
-              <svg
-                style={{ ...styles.Icon, fill: "#2a8501" }}
-                viewBox="0 0 512 512"
-              >
-                <path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>
-              </svg>
+            <div className="flex flex-row justify-start gap-2 mt-3 items-center">
+              {status.navigation == 1 ? (
+                <svg
+                  style={{ ...styles.Icon, fill: "#2a8501" }}
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>
+                </svg>
+              ) : (
+                <svg
+                  style={{ ...styles.Icon, fill: "#ff3b30" }}
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
+                </svg>
+              )}
+
               <span style={styles.item}>Navigation License</span>
             </div>
-            <div
-              style={{ ...styles.btn, backgroundColor: "#17233c" }}
-              className="py-3 text-center mt-2 cursor-pointer"
-            >
-              <span>Ask Verification</span>
-            </div>
-            <div className="flex flex-row justify-between mt-2 gap-2">
+            {status.navigation == 1 && (
               <div
                 style={{ ...styles.btn, backgroundColor: "#17233c" }}
-                className="py-2 text-center px-2 cursor-pointer w-1/2"
+                className="py-3 text-center mt-2 cursor-pointer"
+                onClick={() => {
+                  submitStatus(boatId, "navigation", 2);
+                }}
               >
-                Approve
+                <span>Ask Verification</span>
               </div>
+            )}
+            {status.navigation == 2 && (
               <div
-                style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
-                className="py-2 text-center px-2 cursor-pointer w-1/2"
+                style={{ ...styles.btn, backgroundColor: "#f4bf64" }}
+                className="py-3 text-center mt-2 cursor-pointer"
               >
-                Reject
+                <span>Pending</span>
               </div>
-            </div>
+            )}
+            {status.navigation == 0 && (
+              <div className="flex flex-row justify-between mt-2 gap-2">
+                <div
+                  style={{ ...styles.btn, backgroundColor: "#17233c" }}
+                  className="py-2 text-center px-2 cursor-pointer w-1/2"
+                  onClick={() => {
+                    submitStatus(boatId, "navigation", 1);
+                  }}
+                >
+                  Approve
+                </div>
+                <div
+                  style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
+                  className="py-2 text-center px-2 cursor-pointer w-1/2"
+                  onClick={() => {
+                    submitStatus(boatId, "navigation", 2);
+                  }}
+                >
+                  Reject
+                </div>
+              </div>
+            )}
           </div>
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
             <img
@@ -72,35 +118,65 @@ const DocModal = ({ isOpen, onClose }) => {
               alt=""
               style={{ width: "100%", height: 150 }}
             />
-            <div className="flex flex-row justify-between mt-3 items-center">
-              <svg
-                style={{ ...styles.Icon, fill: "#ff3b30" }}
-                viewBox="0 0 512 512"
-              >
-                <path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-              </svg>
-              <span style={styles.item}>Navigation License</span>
+            <div className="flex flex-row justify-start gap-2 mt-3 items-center">
+              {status.authorization == 1 ? (
+                <svg
+                  style={{ ...styles.Icon, fill: "#2a8501" }}
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>
+                </svg>
+              ) : (
+                <svg
+                  style={{ ...styles.Icon, fill: "#ff3b30" }}
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
+                </svg>
+              )}
+              <span style={styles.item}>Authorization</span>
             </div>
-            <div
-              style={{ ...styles.btn, backgroundColor: "#f4bf64" }}
-              className="py-3 text-center mt-2 cursor-pointer"
-            >
-              <span>Ask Verification</span>
-            </div>
-            <div className="flex flex-row justify-between mt-2 gap-2">
+            {status.authorization == 1 && (
               <div
                 style={{ ...styles.btn, backgroundColor: "#17233c" }}
-                className="py-2 text-center px-2 cursor-pointer w-1/2"
+                className="py-3 text-center mt-2 cursor-pointer"
+                onClick={() => {
+                  submitStatus(boatId, "authorization", 2);
+                }}
               >
-                Approve
+                <span>Ask Verification</span>
               </div>
+            )}
+            {status.authorization == 2 && (
               <div
-                style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
-                className="py-2 text-center px-2 cursor-pointer w-1/2"
+                style={{ ...styles.btn, backgroundColor: "#f4bf64" }}
+                className="py-3 text-center mt-2 cursor-pointer"
               >
-                Reject
+                <span>Pending</span>
               </div>
-            </div>
+            )}
+            {status.authorization == 0 && (
+              <div className="flex flex-row justify-between mt-2 gap-2">
+                <div
+                  style={{ ...styles.btn, backgroundColor: "#17233c" }}
+                  className="py-2 text-center px-2 cursor-pointer w-1/2"
+                  onClick={() => {
+                    submitStatus(boatId, "authorization", 1);
+                  }}
+                >
+                  Approve
+                </div>
+                <div
+                  style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
+                  className="py-2 text-center px-2 cursor-pointer w-1/2"
+                  onClick={() => {
+                    submitStatus(boatId, "authorization", 2);
+                  }}
+                >
+                  Reject
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-row mt-3 justify-center">

@@ -1,50 +1,36 @@
-import React,{useState} from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+import { getAllBookings } from "../../features/bookings/bookingAction";
+
+import { BookingStatus } from "../../utils/Constant";
 import { FormInput } from "../../components";
 import DetailModal from "../../components/Bookings/DetailModal";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const data = [
-    {
-      BookingID: "Eleanor Shellstrop",
-      GuestName: "eleanor@barqua.com",
-      HostName: "+1 234 567 890",
-      BoatName: "123 Paradise St.",
-      BookingDate: "March 14, 1985",
-      Plan: "Phoenix",
-      NPassengers: "USA",
-      TAmount: "Jan 5, 2023, 10:00",
-      Status: "Boat Owner",
-     
-    },
-    {
-      BookingID: "Jason Mendoza",
-      GuestName: "jason@barqua.com",
-      HostName: "+1 987 654 321",
-      BoatName: "456 Sunset Blvd.",
-      BookingDate: "April 1, 1990",
-      Plan: "Miami",
-      NPassengers: "USA",
-      TAmount: "Feb 12, 2023, 13:45",
-      Status: "Guest",
-    
-    },
-    {
-      BookingID: "Tahani Al-Jamil",
-      GuestName: "tahani@barqua.com",
-      HostName: "+44 20 7946 0958",
-      BoatName: "789 Luxury Ave.",
-      BookingDate: "June 6, 1987",
-      Plan: "London",
-      NPassengers: "UK",
-      TAmount: "March 20, 2023, 15:15",
-      Status: "Boat Owner",
-     
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [selectBooking, setSelectBooking] = useState({});
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    const fetchbookings = async () => {
+      let result = await dispatch(getAllBookings());
+      if (result?.errors) {
+        for (let key in result.errors) {
+          if (result.errors.hasOwnProperty(key)) {
+            toast.error(`${result.errors[key]}`);
+          }
+        }
+      } else {
+        await setData(result);
+      }
+    };
+    fetchbookings();
+  }, []);
 
   return (
     <div className="w-full flex flex-col gap-3" style={styles.container}>
@@ -90,34 +76,53 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
+            {data.map((item, index) => (
               <tr
                 key={index}
                 onClick={() => {
+                  setSelectBooking(item);
                   openModal();
                 }}
                 className={`${
                   index % 2 === 0 ? "bg-gray-100" : "bg-white"
                 } border-b cursor-pointer hover:bg-slate-200`}
               >
-                <td className="px-4 py-2">{row.BookingID}</td>
+                <td className="px-4 py-2">{item._id}</td>
                 <td className="px-4 py-2 cursor-pointer">
-                  <u>{row.GuestName}</u>
+                  <u>{item.guestName}</u>
                 </td>
-                <td className="px-4 py-2">{row.HostName}</td>
-                <td className="px-4 py-2">{row.BoatName}</td>
-                <td className="px-4 py-2">{row.BookingDate}</td>
-                <td className="px-4 py-2">{row.Plan}</td>
-                <td className="px-4 py-2">{row.NPassengers}</td>
-                <td className="px-4 py-2">{row.TAmount}</td>
-                <td className="px-4 py-2"><div style={styles.status}>{row.Status}</div></td>
+                <td className="px-4 py-2">{item.hostName}</td>
+                <td className="px-4 py-2">{item.boatName}</td>
+                <td className="px-4 py-2">
+                  {`${new Date(item.date).getUTCFullYear()}-${String(
+                    new Date(item.date).getUTCMonth() + 1
+                  ).padStart(2, "0")}-${String(
+                    new Date(item.date).getUTCDate()
+                  ).padStart(2, "0")}`}
+                </td>
+                <td className="px-4 py-2">{item.plan}</td>
+                <td className="px-4 py-2">{item.NPassengers || "-"}</td>
+                <td className="px-4 py-2">${item.price}</td>
+                <td className="px-4 py-2">
+                  <div
+                    style={{
+                      ...styles.status,
+                      backgroundColor: BookingStatus[item.status].color,
+                    }}
+                  >
+                    {BookingStatus[item.status].title}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <DetailModal isOpen={isModalOpen} onClose={closeModal} />
-      
+      <DetailModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        data={selectBooking}
+      />
     </div>
   );
 };
@@ -155,15 +160,15 @@ const styles = {
     fontWeight: 700,
     lineHeight: "20px",
   },
-  status:{
-    boxSizing: 'border-box',
-    borderRadius: '100000px',
-    backgroundColor: '#ef4444',
-    color: '#ffffff',
-    fontSize: '14px',
+  status: {
+    boxSizing: "border-box",
+    borderRadius: "100000px",
+    backgroundColor: "#ef4444",
+    color: "#ffffff",
+    fontSize: "14px",
     fontWeight: 700,
-    lineHeight: '20px',
-    outline: 'none',
-  }
+    lineHeight: "20px",
+    outline: "none",
+  },
 };
 export default Home;

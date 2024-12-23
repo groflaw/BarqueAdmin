@@ -1,4 +1,4 @@
-const FormInput = ({ type, name, onChange,margin,value }) => {
+const FormInput = ({ type, name, onChange, margin, value, placeholder }) => {
   return (
     <div style={{ ...styles.widget, marginTop: margin }}>
       <input
@@ -6,7 +6,7 @@ const FormInput = ({ type, name, onChange,margin,value }) => {
         type={type}
         name={name}
         value={value}
-        placeholder={`Enter ${name === "email" ? "username" : "password"}`}
+        placeholder={placeholder}
         onChange={onChange}
       />
     </div>

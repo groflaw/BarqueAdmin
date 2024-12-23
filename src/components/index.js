@@ -1,5 +1,6 @@
 export { default as FormInput } from "./basic/FormInput";
 export {default as ToggleSwitch} from './basic/ToggleSwitch';
+export {default as Spiner} from './basic/Spiner';
 export { default as Number } from "./basic/Number";
 export { default as Checkbox } from "./basic/Checkbox";
 export { default as Loading } from "./basic/Loading";

@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import LanguageOption from "./LanguageOption";
 import UserProfile from "./UserProfile";
 
-import { logoutUser } from "../../features/user/userSlice";
-import { clearCart } from "../../features/cart/cartSlice";
 
 import headermark from "../../assets/Icons/headermark.png";
 import bellimg from "../../assets/Icons/bell.png";

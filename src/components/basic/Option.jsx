@@ -11,13 +11,12 @@ const Option = ({
 }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
-  // Setting the selected value on prop change (if needed)
   useEffect(() => {
     setSelectedValue(defaultValue);
   }, [defaultValue]);
 
   const handleChange = (event) => {
-    const value = event.target.value;
+    const value = parseInt(event.target.value, 10);
     setSelectedValue(value);
     onChange({ target: { name, value, _id } });
   };
@@ -27,7 +26,7 @@ const Option = ({
       <select
         value={selectedValue || ""}
         onChange={handleChange}
-        className="h-10 bg-white   w-full"
+        className="h-10 bg-white  w-full"
         style={styles.selct}
       >
         <option value="" disabled>

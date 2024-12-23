@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
 const initialState = {
-  user: {}
+  curuser: {},
+  allusers: [],
 };
 
 const userSlice = createSlice({
@@ -10,15 +10,16 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     loginUser: (state, action) => {
-      state.user = action.payload;
-      toast.success("Logged in succesfully");
+      state.curuser = action.payload;
     },
     logoutUser: (state) => {
-      state.user = null;
-      toast.success("Logged out succesfully");
-    }
+      state.curuser = null;
+    },
+    setAllUsers: (state, action) => {
+      state.allusers = action.payload;
+    },
   },
 });
 
-export const { loginUser, logoutUser, toggleTheme } = userSlice.actions;
+export const { loginUser, logoutUser, setAllUsers } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,32 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import NumberInput from "../basic/Number";
 import Option from "../basic/Option";
 import Slider from "../basic/Slider";
+import Checkbox from "../basic/Checkbox";
 
-const Filter = ({ isOpen, onClose }) => {
+import { getAllBoatTypes } from "../../features/basic/basicAction";
+import { filterBoats } from "../../features/boats/boatsAction";
+
+const Filter = ({ isOpen, onClose,setBoats }) => {
+  const dispatch = useDispatch();
+  if (!isOpen) return null;
   const [selectedOption, setSelectedOption] = useState(null);
   const [price, setPrice] = useState(500); // Default price
+  const boatTypes = useSelector((state) => state.basicState.boattypes);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const fectboattypes = async () => {
+      await dispatch(getAllBoatTypes());
+    };
+    fectboattypes();
+  }, []);
 
-  const options = [
-    { name: "Option 1", _id: "1" },
-    { name: "Option 2", _id: "2" },
-    { name: "Option 3", _id: "3" },
-  ];
+  const [filter, setFilter] = useState({
+    size: 0,
+    boattype: 0,
+    capacity: 0,
+    price: 10,
+    any: true,
+  });
 
-  const handleValueChange = (value) => {
-    setPrice(value);
-  };
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilter((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
+  const toggleAnyCheckbox = (newValue) => {
+    setFilter((prevData) => ({
+      ...prevData,
+      any: newValue,
+    }));
+  };
+  const search = async () => {
+    let result = await dispatch(filterBoats(filter));
+    
+    setBoats(result);
+    onClose();
+    setFilter({
+      size: 0,
+      boattype: 0,
+      capacity: 0,
+      price: 100,
+      any : true
+    });
+  };
+
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
@@ -39,41 +75,45 @@ const Filter = ({ isOpen, onClose }) => {
 
         <div className="mt-2 gap-2 flex flex-col">
           <span style={styles.item}>Size(ft)</span>
-          <NumberInput />
-        </div>
-        <div className="mt-2 gap-2 flex flex-col">
-          <span style={styles.item}>Size(ft)</span>
-          <Option
-            defaultValue={null}
-            width="w-full"
-            options={options}
-            name="example-select"
-            onChange={handleOptionChange}
-            placeholder="Select an option"
+          <NumberInput
+            value={filter.size}
+            onChange={handleChange}
+            name="size"
           />
         </div>
         <div className="mt-2 gap-2 flex flex-col">
           <span style={styles.item}>Size(ft)</span>
-          <NumberInput />
-        </div>
-        <div className="mt-2 gap-2 flex flex-col">
-          <span style={styles.item}>Size(ft)</span>
           <Option
-            defaultValue={null}
+            defaultValue={filter.boattype}
             width="w-full"
-            options={options}
-            name="example-select"
-            onChange={handleOptionChange}
+            options={boatTypes}
+            name="boattype"
+            onChange={handleChange}
             placeholder="Select an option"
           />
         </div>
         <div className="mt-2 gap-2 flex flex-col">
-          <Slider price={price} onValueChange={handleValueChange} />
+          <span style={styles.item}>Capacity (Number of people)</span>
+          <NumberInput
+            value={filter.capacity}
+            onChange={handleChange}
+            name="capacity"
+          />
+        </div>
+        <div className="mt-2 gap-2 flex flex-col">
+          <Slider price={filter.price} onChange={handleChange} name="price" />
+        </div>
+        <div className="mt-2 gap-2 flex flex-row">
+          <Checkbox value={filter.any} onValueChange={toggleAnyCheckbox} />
+          <span style={styles.item}>Any</span>
         </div>
         <div className="flex flex-row justify-center">
           <div
             className="bg-blue-950 hover:bg-blue-900 text-center active:bg-gray-600 mt-4"
             style={{ ...styles.btn, width: "45%" }}
+            onClick={() => {
+              search();
+            }}
           >
             Apply Filters
           </div>

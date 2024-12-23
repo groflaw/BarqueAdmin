@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import boatImage from "../../assets/Profile/boat.png";
 import infoImage from "../../assets/Icons/boatdata.png";
@@ -12,6 +13,15 @@ import allowImage from "../../assets/Icons/boatallow.png";
 import docImage from "../../assets/Icons/vesseldata.png";
 
 const Option = () => {
+  const curboat = useSelector((state) => state.globalState.curboat);
+  const curhost = useSelector((state) => state.globalState.curhost);
+
+  useEffect(() => {
+    if (curboat?._id === undefined) {
+      navigate("/home/boat");
+    }
+  }, []);
+
   return (
     <div style={styles.container} className="flex flex-row gap-5">
       <Link to="/home/boat/detail">
@@ -29,10 +39,16 @@ const Option = () => {
           <div style={styles.card} className="w-full px-4 py-3">
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-col gap-2">
-                <span style={styles.des.name}>BoatName</span>
-                <span style={styles.des.content}>Owner: Sarah Johnson</span>
-                <span style={styles.des.content}>Location: San Diego, CA</span>
-                <span style={styles.des.content}>Submitted: 2023-10-12</span>
+                <span style={styles.des.name}>{curboat.model}</span>
+                <span style={styles.des.content}>
+                  Owner: {curhost.firstName + " " + curhost.lastName}
+                </span>
+                <span style={styles.des.content}>
+                  Location: {curboat.location1}
+                </span>
+                <span style={styles.des.content}>
+                  Submitted: {new Date(curboat.date).toLocaleDateString()}
+                </span>
               </div>
               <img src={boatImage} alt="" style={{ width: 180, height: 90 }} />
             </div>

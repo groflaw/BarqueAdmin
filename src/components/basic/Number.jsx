@@ -8,32 +8,16 @@ const NumberInput = ({ value = 0, onChange, width, name, max }) => {
     setNumberValue(value ?? 0);
   }, [value]);
 
-  const handleIncrease = useCallback(() => {
-    setNumberValue((prevValue) => {
-      const newValue = prevValue + 1;
-      if (max != null && newValue > max) return prevValue;
-
-      onChange({ target: { name, value: newValue } });
-      return newValue;
-    });
-  }, [max, name, onChange]);
-
-  const handleDecrease = useCallback(() => {
-    setNumberValue((prevValue) => {
-      const newValue = Math.max(prevValue - 1, 0);
-      onChange({ target: { name, value: newValue } });
-      return newValue;
-    });
-  }, [name, onChange]);
-
   const handleChangeText = useCallback(
     (text) => {
       const numericValue = parseInt(text, 10);
-      if (!isNaN(numericValue)) {
+      if (!isNaN(numericValue) ) {
         const updatedValue =
           max != null && numericValue > max ? max : numericValue;
-        setNumberValue(updatedValue);
-        onChange({ target: { name, value: updatedValue } });
+          if(updatedValue >= 0){
+            setNumberValue(updatedValue);
+            onChange({ target: { name, value: updatedValue } });
+          }
       }
     },
 
