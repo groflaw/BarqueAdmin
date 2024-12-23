@@ -50,7 +50,7 @@ const DetailModal = ({ isOpen, onClose, data, setData }) => {
             <span>Host Name: {data.hostName}</span>
             <span>Boat Name: {data.boatName}</span>
             <span>Guest Name: {data.guestName}</span>
-            <span>N* of Passengers: -</span>
+            <span>N* of Passengers: {data.count}</span>
             <span>Location: {data.location1}</span>
             <span>Boat Location: {data.boatLocation}</span>
             <span>Boat Address: {data.boatAddress}</span>

@@ -64,6 +64,33 @@ export const getAllBoatBrands = () => async (dispatch) => {
   }
   return {};
 };
+export const updateBrand =
+  ({ id, name }) =>
+  async (dispatch) => {
+    let errors = {};
+    try {
+      const response = await axios.post(
+        `${Backend_API}/boats/addboatbrand`,
+        { id, name },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.flag == true) {
+        dispatch(getallbrands(response.data.data));
+        return response.data.data;
+      } else {
+        errors[response.data.sort] = response.data.error;
+        return { errors };
+      }
+    } catch (error) {
+      errors.general = "There was an error fetching the data.";
+      return { errors };
+    }
+  };
 
 export const getAllowes = () => async (dispatch) => {
   let errors = {};

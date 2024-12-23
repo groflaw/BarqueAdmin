@@ -1,4 +1,4 @@
-export const Backend_API = "http://localhost:5000";
+export const Backend_API = "http://localhost:5000/api";
 
 export const BookingStatus = [
   { title: "TobeConfirmed", color: "#0751c1" },
@@ -15,6 +15,15 @@ export const cancelback = [
 ];
 
 export const BoatStatus = ["Pending Approval", "Approve", "Peding"];
+
+export const Paymethods = [
+  "cash",
+  "card",
+  "Zelle",
+  "binance",
+  "paypal",
+  "bank",
+];
 export const TimeOptions = {
   timeZone: "America/Los_Angeles",
   year: "numeric",
