@@ -1,0 +1,42 @@
+name: CI/CD for Frontend
+
+on:
+  push:
+    branches:
+      - main  # or your chosen branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.0.0'  # Use the version matching your project
+
+      - name: Install dependencies
+        run: |
+          cd /home/BarqueAdmin  # Change to your frontend directory
+          npm install
+
+      - name: Build
+        run: |
+          cd /home/BarqueAdmin
+          npm run build
+
+      - name: Deploy to Server
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        run: |
+          eval "$(ssh-agent -s)"
+          echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
+          ssh -o StrictHostKeyChecking=no $USER@$HOST "rm -rf /var/www/barqueAdmin/* && cp -r /home/BarqueAdmin/dist/* /var/www/barqueAdmin/ && echo 'Frontend deployed successfully'"
