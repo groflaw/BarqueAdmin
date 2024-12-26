@@ -1,4 +1,4 @@
-export const Backend_API = "http://localhost:5000/api";
+export const Backend_API = "https://barqueadmin.com/api";
 
 export const BookingStatus = [
   { title: "TobeConfirmed", color: "#0751c1" },
