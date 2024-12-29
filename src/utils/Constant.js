@@ -1,4 +1,5 @@
-export const Backend_API = "https://barqueadmin.com/api";
+// export const Backend_API = "https://barqueadmin.com/api";
+export const Backend_API = "http://localhost:5000";
 
 export const BookingStatus = [
   { title: "TobeConfirmed", color: "#0751c1" },
@@ -24,13 +25,3 @@ export const Paymethods = [
   "paypal",
   "bank",
 ];
-export const TimeOptions = {
-  timeZone: "America/Los_Angeles",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  hour12: true,
-};

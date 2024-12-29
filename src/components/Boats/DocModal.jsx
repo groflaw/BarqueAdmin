@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import FirstDoc from "../../assets/Background/doc1.png";
 import SecondDoc from "../../assets/Background/doc2.png";

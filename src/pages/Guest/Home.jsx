@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import { FormInput, Checkbox, Loading } from "../../components";
 import DetailModal from "../../components/Guest/DetailModal";
@@ -121,6 +122,7 @@ const Home = () => {
             isOpen={isModalOpen}
             onClose={closeModal}
             data={selectbooking}
+            setData={setData}
           />
         </div>
       )}

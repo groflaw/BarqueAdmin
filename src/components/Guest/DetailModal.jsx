@@ -1,11 +1,29 @@
 import React, { useState } from "react";
+import { setBookStatus } from "../../features/bookings/bookingAction";
+import { useDispatch } from "react-redux";
 
-const DetailModal = ({ isOpen, onClose, data }) => {
+const DetailModal = ({ isOpen, onClose, data, setData }) => {
+  const dispatch = useDispatch();
   if (!isOpen) return null;
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+  const setStatus = async (bookingId, value) => {
+    let result = await dispatch(setBookStatus(bookingId, value));
+    if (result?.errors) {
+      for (let key in result.errors) {
+        if (result.errors.hasOwnProperty(key)) {
+          toast.error(`${result.errors[key]}`);
+        }
+      }
+    } else {
+      setData((prevdata) =>
+        prevdata.map((p) => (p._id === data._id ? { ...p, ...result } : p))
+      );
+    }
+    onClose();
   };
   return (
     <div
@@ -49,12 +67,18 @@ const DetailModal = ({ isOpen, onClose, data }) => {
           <div
             style={{ ...styles.btn, backgroundColor: "#2a8500" }}
             className="py-2 px-8 cursor-pointer"
+            onClick={() => {
+              setStatus(data._id, 3);
+            }}
           >
             Confirm Booking
           </div>
           <div
             style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
             className="py-2 px-8 cursor-pointer"
+            onClick={() => {
+              setStatus(data._id, 1);
+            }}
           >
             Cancel Booking
           </div>

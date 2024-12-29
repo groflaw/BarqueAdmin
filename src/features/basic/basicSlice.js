@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
 const initialState = {
+  servicefee: 10,
+  payment : {},
   boattypes: [],
   boatbrands: [],
   enginecount: [],
@@ -18,6 +20,12 @@ const basicSlice = createSlice({
   name: "basic",
   initialState,
   reducers: {
+    getpayment : (state, action) =>{
+      state.payment = action.payload
+    },
+    getservicefee: (state, action) => {
+      state.servicefee = action.payload;
+    },
     getalltypes: (state, action) => {
       state.boattypes = action.payload;
     },
@@ -52,6 +60,8 @@ const basicSlice = createSlice({
 });
 
 export const {
+  getpayment,
+  getservicefee,
   getalltypes,
   getallbrands,
   getenginecount,

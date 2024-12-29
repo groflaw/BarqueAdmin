@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { setBookStatus } from "../../features/bookings/bookingAction";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 
 const DetailModal = ({ isOpen, onClose, data, setData }) => {
   const dispatch = useDispatch();
@@ -25,7 +27,6 @@ const DetailModal = ({ isOpen, onClose, data, setData }) => {
       );
     }
     onClose();
-
   };
   return (
     <div
@@ -51,7 +52,7 @@ const DetailModal = ({ isOpen, onClose, data, setData }) => {
             <span>Boat Name: {data.boatName}</span>
             <span>Guest Name: {data.guestName}</span>
             <span>N* of Passengers: {data.count}</span>
-            <span>Location: {data.location1}</span>
+            <span>Location: {data.location}</span>
             <span>Boat Location: {data.boatLocation}</span>
             <span>Boat Address: {data.boatAddress}</span>
           </div>
@@ -70,26 +71,28 @@ const DetailModal = ({ isOpen, onClose, data, setData }) => {
             <span>Total Amount: ${data.price}</span>
           </div>
         </div>
-        <div className="flex flex-row justify-center gap-5">
-          <div
-            style={{ ...styles.btn, backgroundColor: "#2a8500" }}
-            className="py-2 px-8 cursor-pointer"
-            onClick={() => {
-              setStatus(data._id, 2);
-            }}
-          >
-            Confirm Booking
+        {data.status == 0 && (
+          <div className="flex flex-row justify-center gap-5">
+            <div
+              style={{ ...styles.btn, backgroundColor: "#2a8500" }}
+              className="py-2 px-8 cursor-pointer"
+              onClick={() => {
+                setStatus(data._id, 2);
+              }}
+            >
+              Confirm Booking
+            </div>
+            <div
+              style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
+              className="py-2 px-8 cursor-pointer"
+              onClick={() => {
+                setStatus(data._id, 1);
+              }}
+            >
+              Cancel Booking
+            </div>
           </div>
-          <div
-            style={{ ...styles.btn, backgroundColor: "#ff3b30" }}
-            className="py-2 px-8 cursor-pointer"
-            onClick={() => {
-              setStatus(data._id, 1);
-            }}
-          >
-            Cancel Booking
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
