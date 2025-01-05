@@ -71,7 +71,7 @@ export const isValidNumber = (value) => {
   if (value <= 0 || value == null) {
     return {
       valid: false,
-      message: "This fields must not be empty",
+      message: "field must not be empty",
     };
   }
   return { valid: true, message: "Valid input number" };
