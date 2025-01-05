@@ -1,38 +1,63 @@
-import React, { useState } from "react";
+import { toast } from "react-toastify";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { FormInput,Rating } from "../../components";
+import { FormInput, Rating } from "../../components";
 import EditReview from "../../components/Reviews/EditReview";
+import { setLoading } from "../../features/global/globalSlice";
+
+import {
+  getAllReviews,
+  deleteHostReview,
+} from "../../features/boats/boatsAction";
 
 const Home = () => {
-  const [reviewdetail, setReviewDetail] = useState(false); // State to control modal visibility
-  const data = [
-    {
-      BoatName: "Albert Jusim",
-      ReviewName: "adasdf",
-      Review: "sdfsd",
-      Rating: "sdfsd",
-      ReviewDate: "sdfsd",
-    },
-    {
-      BoatName: "Albert Jusim",
-      ReviewName: "adasdf",
-      Review: "sdfsd",
-      Rating: "sdfsd",
-      ReviewDate: "sdfsd",
-     
-    },
-    {
-      BoatName: "Albert Jusim",
-      ReviewName: "adasdf",
-      Review: "sdfsd",
-      Rating: "sdfsd",
-      ReviewDate: "sdfsd",
-     
-    },
-  ];
+  const dispatch = useDispatch();
+  const [reviewdetail, setReviewDetail] = useState(false);
+  const [boats, setBoats] = useState([]);
+  const [data, setData] = useState({
+    userName: "",
+    model: "",
+    content: "",
+    review: "",
+    boatId: null,
+    reviewId: null,
+  });
   const openPayModal = () => setReviewDetail(true);
   const closePayModal = () => setReviewDetail(false);
 
+  useEffect(() => {
+    const fetchreviews = async () => {
+      await dispatch(setLoading(true));
+      let result = await dispatch(getAllReviews());
+      setBoats(result);
+      await dispatch(setLoading(false));
+    };
+    fetchreviews();
+  }, []);
+
+  const handleDelete = async (boatId, reviewId) => {
+    let result = await dispatch(deleteHostReview(boatId, reviewId));
+    if (result?.errors) {
+      for (let key in result.errors) {
+        if (result.errors.hasOwnProperty(key)) {
+          toast.error(`${result.errors[key]}`);
+        }
+      }
+    } else {
+      const updateBoats = boats.map((boat) => {
+        if (boat._id === boatId) {
+          return {
+            ...boat,
+            reviews: boat.reviews.filter((review) => review._id !== reviewId),
+          };
+        }
+        return boat;
+      });
+      setBoats(updateBoats);
+      toast.success("Delete Review Successfully");
+    }
+  };
   return (
     <div className="w-full flex flex-col gap-3" style={styles.container}>
       <div className="w-full flex flex-row gap-4  items-center justify-end">
@@ -61,36 +86,72 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
-              <tr
-                key={index}
-                onClick={() => {
-                  openPayModal();
-                }}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                } border-b cursor-pointer hover:bg-slate-200`}
-              >
-                <td className="px-4 py-2">{row.BoatName}</td>
-                <td className="px-4 py-2">{row.ReviewName}</td>
-                <td className="px-4 py-2">{row.Review}</td>
-                <td className="px-4 py-2"><div className="flex flex-row justify-center"><Rating /></div></td>
-                <td className="px-4 py-2">{row.ReviewDate}</td>
-                <td className="px-4 py-2">
-                  <div className="flex flex-row gap-2 justify-center">
-                    <div style={{...styles.btn, backgroundColor : '#17233c'}}>Edit</div>
-                    <div style={{...styles.btn, backgroundColor : '#d9534f'}}>Delete</div>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {boats.map((row, rowIndex) => {
+              return row.reviews?.map((item, reviewIndex) => {
+                return (
+                  <tr
+                    key={`${row._id}-${item._id}`} // Unique key for each row
+                    className={`${
+                      reviewIndex % 2 === 0 ? "bg-gray-100" : "bg-white"
+                    } border-b cursor-pointer hover:bg-slate-200`}
+                  >
+                    <td className="px-4 py-2">{row.model}</td>
+                    <td className="px-4 py-2">
+                      {item.customer.firstName + " " + item.customer.lastName}
+                    </td>
+                    <td className="px-4 py-2">{item.content}</td>
+                    <td className="px-4 py-2">
+                      <div className="flex flex-row justify-center">
+                        <Rating value={item.review} />
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">
+                      {new Date(item.date).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-2">
+                      <div className="flex flex-row gap-2">
+                        <div
+                          style={{ ...styles.btn, backgroundColor: "#17233c" }}
+                          onClick={() => {
+                            setData({
+                              userName:
+                                item.customer.firstName +
+                                " " +
+                                item.customer.lastName,
+                              model: row.model,
+                              content: item.content,
+                              review: item.review,
+                              boatId: row._id,
+                              reviewId: item._id,
+                            });
+                            openPayModal();
+                          }}
+                        >
+                          Edit
+                        </div>
+                        <div
+                          style={{ ...styles.btn, backgroundColor: "#d9534f" }}
+                          onClick={() => {
+                            handleDelete(row._id, item._id);
+                          }}
+                        >
+                          Delete
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              });
+            })}
           </tbody>
         </table>
       </div>
       <EditReview
         isOpen={reviewdetail}
         onClose={closePayModal}
-        
+        data={data}
+        setData={setData}
+        setBoats={setBoats}
       />
     </div>
   );

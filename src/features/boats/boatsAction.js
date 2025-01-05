@@ -432,3 +432,62 @@ export const setBoatStatus = (id, sort, result) => async (dispatch) => {
     return { errors };
   }
 };
+
+export const getAllReviews = () => async (dispatch) => {
+  let errors = {};
+  try {
+    const response = await axios.get(
+      `${Backend_API}/admin/boats/getAllReviews`
+    );
+    if (response.data.flag == true) {
+      return response.data.data;
+    } else {
+      errors[response.data.sort] = response.data.error;
+      return { errors };
+    }
+  } catch (error) {
+    errors.general = "There was an error fetching the boats";
+    return { errors };
+  }
+};
+
+export const setHostReview =
+  (boatId, reviewId, review, content) => async (dispatch) => {
+    let errors = {};
+    try {
+      const response = await axios.post(
+        `${Backend_API}/admin/boats/setHostReview/${boatId}`,
+        { reviewId, review, content },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.flag == true) {
+        return response.data.data;
+      } else {
+        errors[response.data.sort] = response.data.error;
+        return { errors };
+      }
+    } catch (error) {
+      errors.general = "There was an error fetching the boats";
+      return { errors };
+    }
+  };
+
+export const deleteHostReview = (boatId, reviewId) => async (dispatch) => {
+  let errors = {};
+  try {
+    const response = await axios.get(
+      `${Backend_API}/admin/boats/delHostReview/${boatId}/${reviewId}`
+    );
+    if (response.data.flag == true) {
+      return response.data.data;
+    } else {
+      errors[response.data.sort] = response.data.error;
+      return { errors };
+    }
+  } catch (error) {}
+};

@@ -1,4 +1,4 @@
-const FormInput = ({ type, name, onChange, margin, value, placeholder }) => {
+const FormInput = ({ type, name, onChange, margin, value, placeholder,readOnly }) => {
   return (
     <div style={{ ...styles.widget, marginTop: margin }}>
       <input
@@ -8,6 +8,7 @@ const FormInput = ({ type, name, onChange, margin, value, placeholder }) => {
         value={value}
         placeholder={placeholder}
         onChange={onChange}
+        readOnly={readOnly}
       />
     </div>
   );
