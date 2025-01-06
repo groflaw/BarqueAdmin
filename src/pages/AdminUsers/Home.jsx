@@ -21,7 +21,8 @@ const Home = () => {
   ]);
   const [admins, setAdmins] = useState([]);
   const [data, setData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     role: 0,
@@ -65,11 +66,25 @@ const Home = () => {
   };
 
   const handleEdit = (adminId, sort, value) => {
-    setAdmins((prevAdmins) =>
-      prevAdmins.map((admin) =>
-        admin._id === adminId ? { ...admin, [sort]: value } : admin
-      )
-    );
+    if (sort == "name") {
+      setAdmins((prevAdmins) =>
+        prevAdmins.map((admin) =>
+          admin._id === adminId
+            ? {
+                ...admin,
+                firstName: value.split(" ")[0] || "",
+                lastName: value.split(" ")[1] || "",
+              }
+            : admin
+        )
+      );
+    } else {
+      setAdmins((prevAdmins) =>
+        prevAdmins.map((admin) =>
+          admin._id === adminId ? { ...admin, [sort]: value } : admin
+        )
+      );
+    }
   };
 
   const handleSave = async (data) => {
@@ -118,12 +133,22 @@ const Home = () => {
             </span>
             <div className="flex flex-col gap-1 w-1/2">
               <span style={styles.item}>User Name</span>
-              <FormInput
-                type="text"
-                name="name"
-                onChange={handleChange}
-                value={data.name}
-              />
+              <div className="flex flex-row gap-2">
+                <FormInput
+                  type="text"
+                  name="firstName"
+                  onChange={handleChange}
+                  placeholder="First Name"
+                  value={data.firstName}
+                />
+                <FormInput
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  onChange={handleChange}
+                  value={data.lastName}
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1 w-1/2">
               <span style={styles.item}>User Email</span>
@@ -220,7 +245,9 @@ const Home = () => {
               <tr key={index}>
                 <td className="px-4 py-2">
                   <input
-                    value={row.name}
+                    value={`${row?.firstName || ""} ${
+                      row?.lastName || ""
+                    }`.trim()}
                     onChange={(event) =>
                       handleEdit(row._id, "name", event.target.value)
                     }

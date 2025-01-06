@@ -24,7 +24,7 @@ export const Signin = (personInfo) => async (dispatch) => {
       return { errors };
     }
     const response = await axios.get(
-      `${Backend_API}/users/${personInfo.email}/${personInfo.password}`
+      `${Backend_API}/admin/users/${personInfo.email}/${personInfo.password}`
     );
     if (response.data.flag == true) {
       dispatch(loginUser(response.data.existingUser));
@@ -130,7 +130,7 @@ export const blockUser = (userId, value) => async (dispatch) => {
 export const AddAdmin = (data) => async (dispatch) => {
   let errors = {};
   try {
-    const nameValidation = isValidString(data.name);
+    const nameValidation = isValidString(data.firstName);
     const emailValidation = isValidEmail(data.email);
     const passwordValidation = isValidPassword(data.password);
     const roleValidation = isValidNumber(data.role);
@@ -192,7 +192,7 @@ export const getAllAdmins = () => async (dispatch) => {
 export const updateAdmin = (data) => async (dispatch) => {
   let errors = {};
   try {
-    const nameValidation = isValidString(data.name);
+    const nameValidation = isValidString(data.firstName);
     const emailValidation = isValidEmail(data.email);
     const passwordValidation = isValidPassword(data.password);
     const roleValidation = isValidNumber(data.role);

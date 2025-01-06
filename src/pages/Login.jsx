@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
 import { Form, Link, useNavigate } from "react-router-dom";
+import io from "socket.io-client"; // Import the socket.io client library
+import { Backend_API } from "../utils/Constant";
 
 import { FormInput, Checkbox } from "../components";
 import markTitle from "../assets/Icons/headermark.png";
@@ -13,6 +15,7 @@ import { Signin } from "../features/user/userAction";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const socket = io.connect("Backend_API");
 
   const [personInfo, setPersonInfo] = useState({
     email: "",
@@ -39,6 +42,14 @@ const Login = () => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    socket.emit("send_message", {
+      senderId: "123", // ID of the sender
+      receiverId: "456", // ID of the receiver
+      message: "Hello", // The actual message content
+    });
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-screen">
