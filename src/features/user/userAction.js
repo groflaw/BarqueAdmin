@@ -28,6 +28,8 @@ export const Signin = (personInfo) => async (dispatch) => {
     );
     if (response.data.flag == true) {
       dispatch(loginUser(response.data.existingUser));
+      localStorage.setItem("token", response.data.token);
+      return response.data.existingUser;
     } else {
       errors[response.data.sort] = response.data.error;
       return { errors };
@@ -36,10 +38,27 @@ export const Signin = (personInfo) => async (dispatch) => {
     errors.general = "There was an error fetching the data.";
     return { errors };
   }
-  return {};
+};
+
+export const checkToken = () => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (token == undefined) return false;
+    const response = await axios.get(`${Backend_API}/admin/users/protected`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.data.flag == true) {
+      return true;
+    }
+  } catch (error) {
+    dispatch(loginUser({}));
+    localStorage.removeItem("token");
+    return false;
+  }
 };
 
 export const SignOut = () => async (dispatch) => {
+  await localStorage.removeItem("token");
   await dispatch(logoutUser());
 };
 

@@ -1,10 +1,28 @@
-import { Outlet, useNavigation } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import { Header } from "../components";
-import {Loading} from "../components";
-import {Sidebar} from "../components";
+import { Loading } from "../components";
+import { Sidebar } from "../components";
+
+import { checkToken } from "../features/user/userAction";
+
 const HomeLayout = () => {
-  const navigation = useNavigation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isPageLoading = navigation.state === "loading";
+
+  const intialSetting = async () => {
+    let result = await dispatch(checkToken());
+    if (!result) {
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    intialSetting();
+  }, []);
 
   return (
     <>
@@ -17,7 +35,7 @@ const HomeLayout = () => {
           </nav>
           <div className="flex flex-row w-full ">
             <div className="w-1/6 pl-8 pr-8 pt-2 shadow-md">
-              <Sidebar/>
+              <Sidebar />
             </div>
             <div className="w-5/6 ">
               <Outlet />

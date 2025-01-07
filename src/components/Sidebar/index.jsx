@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import boatImage from "../../assets/Icons/nav-boat.png";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { SignOut } from "../../features/user/userAction";
 
 const UserIcon = ({ isSelected }) => (
   <svg style={styles.Icon} viewBox="0 0 24 24">
@@ -108,9 +111,11 @@ const styles = {
     height: "26px",
   },
 };
+
 const Sidebar = () => {
   const [isactive, setIsactive] = useState(0);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <div className="flex flex-col h-screen  bg-white ">
       <Link to="/home">
@@ -307,6 +312,7 @@ const Sidebar = () => {
         style={{ backgroundColor: isactive == 11 ? "#17233c" : "" }}
         onClick={() => {
           setIsactive(11);
+          dispatch(SignOut());
           navigate("/");
         }}
       >

@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { redirect } from "react-router-dom";
 import { Form, Link, useNavigate } from "react-router-dom";
-import io from "socket.io-client"; // Import the socket.io client library
-import { Backend_API } from "../utils/Constant";
+import socket from "../utils/Socket";
 
 import { FormInput, Checkbox } from "../components";
 import markTitle from "../assets/Icons/headermark.png";
 import userShield from "../assets/Icons/userShield.png";
 
-import { Signin } from "../features/user/userAction";
+import { Signin, checkToken } from "../features/user/userAction";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const socket = io.connect("Backend_API");
-
   const [personInfo, setPersonInfo] = useState({
     email: "",
     password: "",
@@ -31,6 +27,7 @@ const Login = () => {
         }
       }
     } else {
+      socket.emit("registerUser", result._id);
       navigate("/home");
     }
   };
@@ -43,13 +40,31 @@ const Login = () => {
     }));
   };
 
+  const initialSetting = async () => {
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else {
+      requestPermission();
+    }
+    let result = await dispatch(checkToken());
+    if (result) {
+      navigate("/home");
+    }
+  };
+
   useEffect(() => {
-    socket.emit("send_message", {
-      senderId: "123", // ID of the sender
-      receiverId: "456", // ID of the receiver
-      message: "Hello", // The actual message content
-    });
+    initialSetting();
   }, []);
+
+  const requestPermission = () => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("Permission granted");
+        }
+      });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen">

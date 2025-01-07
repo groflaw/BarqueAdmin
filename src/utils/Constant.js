@@ -1,4 +1,5 @@
 export const Backend_API = "https://barqueadmin.com/api";
+export const Socket_API = "https://barqueadmin.com"
 // export const Backend_API = "http://localhost:5000";
 
 export const BookingStatus = [
