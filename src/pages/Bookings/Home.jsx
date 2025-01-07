@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getAllBookings } from "../../features/bookings/bookingAction";
-
 import { setLoading } from "../../features/global/globalSlice";
 import { BookingStatus } from "../../utils/Constant";
+import { showNotification } from "../../utils";
+import socket from "../../utils/Socket";
+
 import { FormInput, Loading } from "../../components";
 import DetailModal from "../../components/Bookings/DetailModal";
+
+import bellimg from "../../assets/Icons/bell.png";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -19,23 +23,32 @@ const Home = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  useEffect(() => {
-    const fetchbookings = async () => {
-      await dispatch(setLoading(true));
-      let result = await dispatch(getAllBookings());
-      if (result?.errors) {
-        for (let key in result.errors) {
-          if (result.errors.hasOwnProperty(key)) {
-            toast.error(`${result.errors[key]}`);
-          }
+  const fetchbookings = async () => {
+    await dispatch(setLoading(true));
+    let result = await dispatch(getAllBookings());
+    if (result?.errors) {
+      for (let key in result.errors) {
+        if (result.errors.hasOwnProperty(key)) {
+          toast.error(`${result.errors[key]}`);
         }
-      } else {
-        await setData(result);
       }
-      await dispatch(setLoading(false));
-    };
+    } else {
+      await setData(result);
+    }
+    await dispatch(setLoading(false));
+  };
+
+  useEffect(() => {
     fetchbookings();
   }, []);
+
+  socket.on("receivebooking", (message) => {
+    fetchbookings();
+    showNotification("Hello!", {
+      body: "This is a desktop notification from your React app!",
+      icon: { bellimg },
+    });
+  });
 
   return (
     <>

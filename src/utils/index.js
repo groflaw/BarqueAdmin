@@ -25,17 +25,3 @@ export const generateAmountOptions = (number) => {
   });
 };
 
-export const showNotification = (title, options) => {
-  const notification = new Notification(title, options);
-
-  notification.onclick = () => {
-    window.focus();
-  };
-};
-
-setTimeout(async () => {
-  showNotification("Hello!", {
-    body: "This is a desktop notification from your React app!",
-    icon: "https://example.com/icon.png",
-  });
-}, 5000);
