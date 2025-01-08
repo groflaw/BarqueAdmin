@@ -4,13 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllBookings } from "../../features/bookings/bookingAction";
 import { setLoading } from "../../features/global/globalSlice";
 import { BookingStatus } from "../../utils/Constant";
-import { showNotification } from "../../utils";
+import { showNotification } from "../../utils/notification";
 import socket from "../../utils/Socket";
 
 import { FormInput, Loading } from "../../components";
 import DetailModal from "../../components/Bookings/DetailModal";
-
-import bellimg from "../../assets/Icons/bell.png";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -40,15 +38,21 @@ const Home = () => {
 
   useEffect(() => {
     fetchbookings();
-  }, []);
 
-  socket.on("receivebooking", (message) => {
-    fetchbookings();
-    showNotification("Hello!", {
-      body: "This is a desktop notification from your React app!",
-      icon: { bellimg },
-    });
-  });
+    const handleReceiveBooking = async (message) => {
+      await fetchbookings();
+      console.log(message);
+      showNotification("Barque", {
+        body: message,
+      });
+    };
+
+    socket.on("receivebooking", handleReceiveBooking);
+    console.log("okay");
+    return () => {
+      socket.off("receivebooking", handleReceiveBooking);
+    };
+  }, [dispatch]);
 
   return (
     <>

@@ -7,7 +7,7 @@ import SecondDoc from "../../assets/Background/doc2.png";
 
 import { setBoatStatus } from "../../features/boats/boatsAction";
 
-const DocModal = ({ isOpen, onClose, status, boatId }) => {
+const DocModal = ({ isOpen, onClose, status, boatId,image }) => {
   const dispatch = useDispatch();
   if (!isOpen) return null;
   const handleOverlayClick = (e) => {
@@ -51,7 +51,7 @@ const DocModal = ({ isOpen, onClose, status, boatId }) => {
         </div>
         <div className="flex flex-row mt-3 gap-4">
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
-            <img src={FirstDoc} alt="" style={{ width: "100%", height: 150 }} />
+            <img src={image.navigation} alt="" style={{ width: "100%", height: 150 }} />
             <div className="flex flex-row justify-start gap-2 mt-3 items-center">
               {status.navigation == 1 ? (
                 <svg
@@ -115,7 +115,7 @@ const DocModal = ({ isOpen, onClose, status, boatId }) => {
           </div>
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
             <img
-              src={SecondDoc}
+              src={image.authorization}
               alt=""
               style={{ width: "100%", height: 150 }}
             />

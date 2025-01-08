@@ -583,6 +583,7 @@ const Detail = () => {
             onClose={closeModal}
             status={curboat.status}
             boatId={curboat._id}
+            image = {curboat.docImage}
           />
         </div>
       )}

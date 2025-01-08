@@ -48,6 +48,7 @@ export const checkToken = () => async (dispatch) => {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (response.data.flag == true) {
+    
       return true;
     }
   } catch (error) {

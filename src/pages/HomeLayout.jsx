@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import socket from "../utils/Socket";
 
 import { Header } from "../components";
 import { Loading } from "../components";
@@ -18,6 +20,9 @@ const HomeLayout = () => {
     if (!result) {
       navigate("/");
     }
+    const token = localStorage.getItem("token");
+    const decoded = jwtDecode(token);
+    socket.emit("registerUser", decoded.id);
   };
 
   useEffect(() => {
