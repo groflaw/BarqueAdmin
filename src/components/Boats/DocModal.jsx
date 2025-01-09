@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import FirstDoc from "../../assets/Background/doc1.png";
-import SecondDoc from "../../assets/Background/doc2.png";
-
 import { setBoatStatus } from "../../features/boats/boatsAction";
+import socket from "../../utils/Socket";
 
-const DocModal = ({ isOpen, onClose, status, boatId,image }) => {
+const DocModal = ({ isOpen, onClose, status, boatId, image }) => {
   const dispatch = useDispatch();
   if (!isOpen) return null;
   const handleOverlayClick = (e) => {
@@ -16,14 +14,20 @@ const DocModal = ({ isOpen, onClose, status, boatId,image }) => {
     }
   };
 
-  const submitStatus = (id, sort, value) => {
-    let result = dispatch(setBoatStatus(id, sort, value));
+  const submitStatus = async (id, sort, value) => {
+    let result = await dispatch(setBoatStatus(id, sort, value));
     if (result?.errors) {
       for (let key in result.errors) {
         if (result.errors.hasOwnProperty(key)) {
           toast.error(`${result.errors[key]}`);
         }
       }
+    } else {
+      let message =
+        value == 1
+          ? `Admin Aprrove the document's ${sort}`
+          : `Admin ask the document's ${sort}`;
+      socket.emit("alertsetboatdoc", { message: message, userId: result.user });
     }
   };
   return (
@@ -51,7 +55,11 @@ const DocModal = ({ isOpen, onClose, status, boatId,image }) => {
         </div>
         <div className="flex flex-row mt-3 gap-4">
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
-            <img src={image.navigation} alt="" style={{ width: "100%", height: 150 }} />
+            <img
+              src={image?.navigation}
+              alt=""
+              style={{ width: "100%", height: 150 }}
+            />
             <div className="flex flex-row justify-start gap-2 mt-3 items-center">
               {status.navigation == 1 ? (
                 <svg
@@ -115,7 +123,7 @@ const DocModal = ({ isOpen, onClose, status, boatId,image }) => {
           </div>
           <div style={styles.doccard} className="w-1/2 p-3 flex flex-col">
             <img
-              src={image.authorization}
+              src={image?.authorization}
               alt=""
               style={{ width: "100%", height: 150 }}
             />
@@ -219,7 +227,7 @@ const styles = {
   },
   item: {
     color: "#17233c",
-    fontSize: "14px",
+    fontSize: "13px",
     lineHeight: "20px",
   },
   btn: {

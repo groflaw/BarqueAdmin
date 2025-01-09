@@ -423,6 +423,7 @@ export const setBoatStatus = (id, sort, result) => async (dispatch) => {
     if (response.data.flag == true) {
       dispatch(setCurboat(response.data.data));
       toast.success("Operation Successfully");
+      return response.data.data
     } else {
       errors[response.data.sort] = response.data.error;
       return { errors };

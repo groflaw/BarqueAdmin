@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import { FormInput, Checkbox } from "../../components";
+import socket from "../../utils/Socket";
+import { showNotification } from "../../utils/notification";
+
 import FileImage from "../../assets/Icons/mms.png";
 import Comment from "../../assets/Icons/comment.png";
+
 const Home = () => {
+  const dispatch = useDispatch();
+
   const data = [
     {
       User: "Albert Jusim",
@@ -27,6 +34,7 @@ const Home = () => {
       Status: "Unread",
     },
   ];
+
   return (
     <div className="w-full flex flex-col gap-3" style={styles.container}>
       <div className="flex flex-row justify-end">
@@ -35,7 +43,6 @@ const Home = () => {
           <div
             style={{ ...styles.btn, backgroundColor: "#17233c" }}
             className="text-center p-2"
-
           >
             Search
           </div>
@@ -161,7 +168,10 @@ const Home = () => {
             </div>
           </div>
           <FormInput />
-          <textarea style={{...styles.detail, height : '170px'}} className="px-2 py-1 mt-3"></textarea>
+          <textarea
+            style={{ ...styles.detail, height: "170px" }}
+            className="px-2 py-1 mt-3"
+          ></textarea>
           <div
             style={{ ...styles.btn, backgroundColor: "#17233c" }}
             className="py-2 px-2 text-center mt-2"
@@ -175,7 +185,10 @@ const Home = () => {
             Select Template
           </span>
           <FormInput />
-          <textarea style={{...styles.detail, height : '200px'}} className="px-2 py-1 mt-3"></textarea>
+          <textarea
+            style={{ ...styles.detail, height: "200px" }}
+            className="px-2 py-1 mt-3"
+          ></textarea>
           <div
             style={{ ...styles.btn, backgroundColor: "#17233c" }}
             className="py-2 px-2 text-center mt-2"

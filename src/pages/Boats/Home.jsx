@@ -7,6 +7,8 @@ import { FormInput, Filter, Spiner } from "../../components";
 import { getAllboats, getboatInfo } from "../../features/boats/boatsAction";
 import { getUser } from "../../features/user/userAction";
 import { BoatStatus } from "../../utils/Constant";
+import socket from "../../utils/Socket";
+import { showNotification } from "../../utils/notification";
 import { setLoading, setCurhost } from "../../features/global/globalSlice";
 
 import boatImage from "../../assets/Profile/boat.png";
@@ -23,13 +25,14 @@ const Home = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const fetchboats = async () => {
+    await dispatch(setLoading(true));
+    let result = await dispatch(getAllboats());
+    setBoats(result);
+    await dispatch(setLoading(false));
+  };
+  
   useEffect(() => {
-    const fetchboats = async () => {
-      await dispatch(setLoading(true));
-      let result = await dispatch(getAllboats());
-      setBoats(result);
-      await dispatch(setLoading(false));
-    };
     fetchboats();
   }, []);
 

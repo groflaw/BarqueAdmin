@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { setBookStatus } from "../../features/bookings/bookingAction";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-
+import socket from "../../utils/Socket";
 
 const DetailModal = ({ isOpen, onClose, data, setData }) => {
   const dispatch = useDispatch();
@@ -22,6 +22,15 @@ const DetailModal = ({ isOpen, onClose, data, setData }) => {
         }
       }
     } else {
+      let message =
+        value == 2
+          ? "Admin confirm your new booking"
+          : "Admin cancel your new booking";
+      socket.emit("adminresbooking", {
+        userId: result.userId,
+        hostId: result.hostId,
+        message: message,
+      });
       setData((prevdata) =>
         prevdata.map((p) => (p._id === data._id ? { ...p, ...result } : p))
       );

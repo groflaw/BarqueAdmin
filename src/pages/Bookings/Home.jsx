@@ -38,20 +38,6 @@ const Home = () => {
 
   useEffect(() => {
     fetchbookings();
-
-    const handleReceiveBooking = async (message) => {
-      await fetchbookings();
-      console.log(message);
-      showNotification("Barque", {
-        body: message,
-      });
-    };
-
-    socket.on("receivebooking", handleReceiveBooking);
-    console.log("okay");
-    return () => {
-      socket.off("receivebooking", handleReceiveBooking);
-    };
   }, [dispatch]);
 
   return (
